@@ -1,0 +1,43 @@
+/* body fonts */
+@import url('https://fonts.googleapis.com/css2?family=Itim&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+
+@layer base {
+    body {
+
+        font-size: 16px;
+        color: #687693;
+        line-height: 1.8em;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        color: #232323;
+    }
+
+
+
+}
+
+@tailwind components;
+@tailwind utilities;
+
+.section-wrap {
+    @apply py-[120px] md:py-[90px] sm:py-[80px] relative z-10
+}
+
+.wraper {
+    @apply mx-auto max-w-[1320px] xl:max-w-[1140px] lg:max-w-[960px] md:max-w-[720px] sm:max-w-[540px] col:max-w-full xl:px-[12px] lg:px-[12px] md:px-[15px] sm:px-[10px]
+}
+
+
+
+.clip-your-needful-style {
+    -webkit-clip-path: polygon(0 0, 100% 0, 55% 100%, 0% 100%);
+    clip-path: polygon(0 0, 100% 0, 55% 100%, 0% 100%);
+}

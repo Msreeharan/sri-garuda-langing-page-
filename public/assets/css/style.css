@@ -1,0 +1,714 @@
+.main-header {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.996);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.logo {
+  height: 40px;
+}
+
+.header-call-btn {
+  background-color: #4b00ff;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.header-call-btn:hover {
+  background-color: #3700b3;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.features-list {
+  list-style: none;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.features-list li {
+  margin-bottom: 5px;
+}
+
+.price-offer-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  background-color: green;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.old-price {
+  text-decoration: line-through;
+  background: red;
+  color: white;
+  padding: 3px 6px;
+  border-radius: 4px;
+  margin-right: 8px;
+}
+
+.new-price {
+  color: #ffeb3b;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.call-btn {
+  display: inline-block;
+  background-color: #3d0af5;
+  color: white;
+  padding: 10px 24px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.call-btn:hover {
+  background-color: #4e1ef7;
+}
+
+.what-you-get {
+  padding: 40px 20px;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.what-you-get h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.scrolling-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Hide scrollbar in Firefox */
+}
+
+.scrolling-container::-webkit-scrollbar {
+  display: none; /* Hide scrollbar in Chrome/Safari */
+}
+
+.scrolling-content {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  animation: scroll-left 25s linear infinite;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.feature-item {
+  min-width: 140px;
+  background-color: white;
+  padding: 20px 10px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  flex-shrink: 0;
+}
+
+.feature-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.icon-container {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 12px;
+}
+
+.icon-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.feature-item p {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  margin-top: 10px;
+}
+
+/* Desktop Style */
+@media (min-width: 768px) {
+  .scrolling-container {
+    overflow: visible;
+  }
+
+  .scrolling-content {
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: none;
+    gap: 30px;
+  }
+
+  .feature-item {
+    min-width: 180px;
+  }
+}
+
+.vehicle-scroll-wrapper {
+  overflow: hidden; /* Hide scrollbar */
+  position: relative;
+}
+
+.vehicle-scroll-track {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  animation: auto-scroll 10s linear infinite; /* Adjust speed here */
+}
+
+@keyframes auto-scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* If you want the track to loop smoothly, you need to duplicate the items in HTML (you already did) */
+
+/* Keep all your previous styles as-is */
+
+.vehicle-section {
+  padding: 40px 20px;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.vehicle-heading {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.vehicle-card {
+  min-width: 180px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex-shrink: 0;
+}
+
+.vehicle-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.vehicle-image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+.vehicle-type {
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #555;
+  background-color: #f5f5f5;
+}
+
+.vehicle-features {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Tablet View */
+@media (min-width: 768px) {
+  .vehicle-scroll-track {
+    animation: none; /* Stop auto scroll on tablet and larger */
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    width: 100%;
+  }
+
+  .vehicle-card {
+    min-width: 200px;
+  }
+
+  .vehicle-image {
+    height: 140px;
+  }
+}
+
+/* Desktop View */
+@media (min-width: 1024px) {
+  .vehicle-card {
+    min-width: 220px;
+  }
+
+  .vehicle-image {
+    height: 160px;
+  }
+
+  .vehicle-type {
+    font-size: 18px;
+  }
+
+  .vehicle-features {
+    font-size: 16px;
+  }
+}
+
+.trust-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f1dcc5;
+  padding: 16px 20px;
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+  gap: 12px;
+}
+
+.trust-content {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.call-now-btn {
+  display: inline-block;
+  background-color: #1714c2;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(255, 127, 0, 0.3);
+  transition: background-color 0.3s ease;
+}
+
+.call-now-btn:hover {
+  background-color: #e76f00;
+}
+
+/* Tablet & Desktop */
+@media (min-width: 768px) {
+  .trust-banner {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 16px 40px;
+  }
+
+  .trust-content {
+    font-size: 18px;
+  }
+
+  .call-now-btn {
+    font-size: 18px;
+    padding: 14px 32px;
+  }
+}
+
+.how-to-book {
+  padding: 40px 20px;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.how-to-book-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.how-to-book-title span {
+  font-size: 20px;
+  font-weight: 500;
+  color: #ff7f00;
+}
+
+.steps-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.step-card {
+  background-color: white;
+  border-radius: 16px;
+  padding: 20px;
+  width: 90%;
+  max-width: 320px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.step-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.step-icon {
+  font-size: 45px;
+  color: green;
+  margin-bottom: 10px;
+}
+
+.step-icon img {
+  width: 40px;
+  height: 40px;
+}
+
+.step-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #555;
+}
+
+/* Tablet & Desktop View */
+@media (min-width: 768px) {
+  .steps-container {
+    flex-direction: row;
+    justify-content: center;
+    gap: 30px;
+  }
+
+  .step-card {
+    width: 250px;
+  }
+
+  .step-title {
+    font-size: 18px;
+  }
+}
+
+.trip-roadmap-modern {
+  padding: 40px 20px;
+  background-color: #f9f9f9;
+}
+
+.trip-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #333;
+  position: relative;
+}
+
+.timeline {
+  position: relative;
+  margin: 0 auto;
+  padding-left: 20px;
+  max-width: 600px;
+  border-left: 4px solid #ccc;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 40px;
+  padding-left: 30px;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: -12px;
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  border: 4px solid #6c63ff;
+  border-radius: 50%;
+}
+
+.timeline-content {
+  background-color: #fff;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-left: 5px solid var(--timeline-color, #6c63ff);
+}
+
+.timeline-image img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.timeline-text h4 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.timeline-text p {
+  font-size: 14px;
+  color: #555;
+}
+
+.timeline-dot {
+  display: none; /* Not needed here */
+}
+
+/* Example: Different colors per step using custom property */
+.timeline-item:nth-child(1) .timeline-content {
+  --timeline-color: #8E24AA;
+}
+
+.timeline-item:nth-child(2) .timeline-content {
+  --timeline-color: #FB8C00;
+}
+
+.timeline-item:nth-child(3) .timeline-content {
+  --timeline-color: #43A047;
+}
+
+.timeline-item:nth-child(4) .timeline-content {
+  --timeline-color: #FB8C00;
+}
+
+.timeline-item:nth-child(5) .timeline-content {
+  --timeline-color: #8E24AA;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .timeline {
+    padding-left: 15px;
+  }
+
+  .timeline-content {
+    flex-direction: row;
+    gap: 15px;
+  }
+}
+
+.review-carousel-section {
+  padding: 60px 20px;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.review-carousel-section h3 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 40px;
+}
+
+.review-carousel {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.review-carousel::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.review-card {
+  flex: 0 0 300px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  scroll-snap-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.review-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.stars {
+  font-size: 20px;
+  color: #ffb400;
+  margin-bottom: 10px;
+}
+
+.review {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Responsive Improvements */
+@media (max-width: 768px) {
+  .review-card {
+    flex: 0 0 250px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .review-carousel {
+    justify-content: center;
+    flex-wrap: wrap;
+    overflow-x: hidden;
+  }
+
+  .review-card {
+    flex: 0 0 250px;
+    margin: 10px;
+  }
+}
+
+/* Banner Section Styling */
+.promo-banner {
+  width: 100%;
+  margin: 20px 0;
+}
+
+.banner-container {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.banner-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* Overlay Text Style */
+.banner-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+  padding: 20px;
+}
+
+.offer-text {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.call-btn {
+  background-color: #4e00ff;
+  color: white;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none;
+  box-shadow: 0 4px 8px rgba(78, 0, 255, 0.4);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.call-btn:hover {
+  background-color: #3c00c9;
+  transform: scale(1.05);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .offer-text {
+    font-size: 18px;
+  }
+
+  .call-btn {
+    font-size: 14px;
+    padding: 8px 18px;
+  }
+}

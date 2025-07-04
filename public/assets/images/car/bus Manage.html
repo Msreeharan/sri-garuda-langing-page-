@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Attappadi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Simple scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        /* Style for the timeline */
+        .timeline-wrapper {
+            position: relative;
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 2.5rem; /* Space for the line and dot */
+            height: 4.5rem; /* 72px - Fixed height for positioning */
+        }
+        /* Static dot for each stop */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 1.25rem;
+            top: 0.25rem;
+            height: 0.75rem;
+            width: 0.75rem;
+            background-color: #dbeafe; /* blue-100 */
+            border: 2px solid #93c5fd; /* blue-300 */
+            border-radius: 9999px;
+            z-index: 1;
+        }
+        /* Timeline connector line */
+        .timeline-connector {
+            position: absolute;
+            left: 1.5625rem; /* Aligns with the center of the dot */
+            top: 0.25rem;
+            bottom: -0.25rem;
+            width: 2px;
+            background-color: #bfdbfe; /* blue-200 */
+        }
+        .timeline-item:last-child > .timeline-connector {
+            display: none;
+        }
+        /* Style for passed stops */
+        .timeline-item.passed::before {
+             background-color: #3b82f6; /* blue-500 */
+             border-color: #3b82f6;
+        }
+        .timeline-item.passed .timeline-connector {
+            background-color: #3b82f6; /* blue-500 */
+        }
+        /* Stop Name Text Styling */
+        .stop-name {
+            color: #374151; /* gray-700 */
+            font-weight: 500;
+        }
+         .timeline-item.passed .stop-name {
+            color: #9ca3af; /* gray-400 */
+        }
+        /* Live dot icon style */
+        .live-dot-icon {
+            position: absolute;
+            width: 1rem; /* 16px */
+            height: 1rem; /* 16px */
+            background-color: #3b82f6;
+            border-radius: 9999px;
+            z-index: 10;
+            transition: top 2s linear;
+            left: calc(1.625rem - 0.5rem); /* Center the dot over the line */
+            top: -0.25rem; /* Initial position adjustment */
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.4);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        /* Edit Mode Button Styles */
+        .edit-btn {
+            background-color: #e5e7eb; padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 600; border-radius: 0.375rem;
+        }
+        .delete-btn {
+             background-color: #fecaca; color: #dc2626; padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 600; border-radius: 0.375rem;
+        }
+        /* Custom message box for alerts */
+        #message-box {
+            transition: opacity 0.3s, transform 0.3s;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex justify-center">
+
+    <div class="w-full max-w-md bg-white min-h-screen shadow-lg">
+        <!-- Header -->
+        <header class="bg-white sticky top-0 z-20 p-4 border-b border-gray-200 text-center">
+             <div class="flex justify-between items-center">
+                <div class="w-16"></div>
+                <div class="text-center">
+                    <h1 class="text-2xl font-bold text-gray-800">Digital Attappadi</h1>
+                    <p class="text-sm text-gray-500">Makkal Raja Transport Corporation</p>
+                </div>
+                <div id="auth-container" class="w-16 text-right">
+                    <!-- Auth buttons will be injected here -->
+                </div>
+            </div>
+        </header>
+
+        <!-- Bus Schedule List -->
+        <main id="schedule-list" class="divide-y divide-gray-200">
+            <!-- Bus schedule items will be injected here by JavaScript -->
+        </main>
+        
+        <div id="add-bus-container" class="p-4 hidden">
+             <button id="add-bus-btn" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded">Add New Bus</button>
+        </div>
+
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-30">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 id="modal-title" class="text-lg leading-6 font-medium text-gray-900">Edit Details</h3>
+                <div class="mt-2 px-7 py-3">
+                    <form id="edit-form" class="space-y-4">
+                        <!-- Form fields will be injected here -->
+                    </form>
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button id="modal-save" class="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        Save Changes
+                    </button>
+                     <button id="modal-cancel" class="mt-2 px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-300 focus:outline-none">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Custom Message Box -->
+    <div id="message-box" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg opacity-0 transform translate-y-2">
+        <p id="message-text"></p>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- STATE ---
+            let busData = [];
+            const openDropdowns = new Set();
+            let isAdmin = false;
+            
+            // --- DOM ELEMENTS ---
+            const scheduleList = document.getElementById('schedule-list');
+            const authContainer = document.getElementById('auth-container');
+            const addBusContainer = document.getElementById('add-bus-container');
+            const addBusBtn = document.getElementById('add-bus-btn');
+            const editModal = document.getElementById('edit-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const editForm = document.getElementById('edit-form');
+            const modalSaveBtn = document.getElementById('modal-save');
+            const modalCancelBtn = document.getElementById('modal-cancel');
+            const messageBox = document.getElementById('message-box');
+            const messageText = document.getElementById('message-text');
+
+            // --- DATA MANAGEMENT ---
+            const predefinedBusNames = ['KSRTC', 'SPR', 'SRG', 'KMS', 'RPC', 'Abirami'];
+            const predefinedOriginStops = ['Anaikkatty', 'Sholayur', 'Goolikkadavu Jn', 'Mannarkkad', 'Palakkad'];
+            const predefinedDestinationStops = ['Anaikkatty', 'Goolikkadavu Jn', 'Mannarkkad', 'Palakkad'];
+            const predefinedStops = ['Anaikatti', 'Kottathara', 'Agali Jn', 'Goolikkadavu Jn', 'Thavalam', 'Mukkali', 'Mannarkkad', 'Palakkad'];
+
+            const defaultBusData = [
+                { id: crypto.randomUUID(), busNumber: 'KSRTC', origin: 'Anaikatti', destination: 'Mannarkkad', stops: [ { name: 'Anaikatti', scheduledTime: '20:30' }, { name: 'Kottathara', scheduledTime: '20:45' }, { name: 'Agali Jn', scheduledTime: '20:55' }, { name: 'Goolikkadavu Jn', scheduledTime: '21:00' }, { name: 'Thavalam', scheduledTime: '21:15' }, { name: 'Mukkali', scheduledTime: '21:30' }, { name: 'Mannarkkad', scheduledTime: '22:00' } ] },
+                { id: crypto.randomUUID(), busNumber: 'KSRTC', origin: 'Mannarkkad', destination: 'Anaikatti', stops: [ { name: 'Mannarkkad', scheduledTime: '21:00' }, { name: 'Mukkali', scheduledTime: '21:30' }, { name: 'Thavalam', scheduledTime: '21:45' }, { name: 'Goolikkadavu Jn', scheduledTime: '22:00' }, { name: 'Agali Jn', scheduledTime: '22:05' }, { name: 'Kottathara', scheduledTime: '22:15' }, { name: 'Anaikatti', scheduledTime: '22:30' }, ] },
+                { id: crypto.randomUUID(), busNumber: 'SBT', origin: 'Anaikatti', destination: 'Palakkad', stops: [ { name: 'Anaikatti', scheduledTime: '20:40' }, { name: 'Kottathara', scheduledTime: '20:55' }, { name: 'Agali Jn', scheduledTime: '21:05' }, { name: 'Goolikkadavu Jn', scheduledTime: '21:10' }, { name: 'Thavalam', scheduledTime: '21:25' }, { name: 'Mukkali', scheduledTime: '21:40' }, { name: 'Mannarkkad', scheduledTime: '22:10' }, { name: 'Palakkad', scheduledTime: '22:40' } ] },
+                { id: crypto.randomUUID(), busNumber: 'Abirami', origin: 'Anaikatti', destination: 'Goolikkadu', stops: [ { name: 'Anaikatti', scheduledTime: '20:55' }, { name: 'Kottathara', scheduledTime: '21:10' }, { name: 'Agali Jn', scheduledTime: '21:20' }, { name: 'Goolikkadavu Jn', scheduledTime: '21:25' } ] }
+            ];
+
+            function loadData() {
+                const storedData = localStorage.getItem('busScheduleData');
+                if (storedData) {
+                    busData = JSON.parse(storedData);
+                } else {
+                    busData = defaultBusData;
+                }
+                sortBusData(); // Always sort on load
+                saveData();
+            }
+
+            function saveData() {
+                localStorage.setItem('busScheduleData', JSON.stringify(busData));
+            }
+
+            function sortBusData() {
+                busData.sort((a, b) => {
+                    if (a.stops.length === 0) return 1;
+                    if (b.stops.length === 0) return -1;
+                    const timeA = parseTime(a.stops[0].scheduledTime);
+                    const timeB = parseTime(b.stops[0].scheduledTime);
+                    return timeA - timeB;
+                });
+            }
+
+            // --- HELPER FUNCTIONS ---
+            function parseTime(timeString) {
+                const now = new Date();
+                const [hours, minutes] = timeString.split(':');
+                now.setHours(hours, minutes, 0, 0);
+                return now;
+            }
+
+            function formatTime(dateObject) { return dateObject.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }); }
+            
+            function formatEta(minutes, prefix = '') {
+                if (minutes <= 1) return 'Now';
+                if (minutes < 60) return `${prefix}${minutes} min`;
+                const hours = Math.floor(minutes / 60);
+                const remainingMinutes = minutes % 60;
+                if (remainingMinutes === 0) return `${prefix}${hours} hr`;
+                return `${prefix}${hours} hr ${remainingMinutes} min`;
+            }
+            
+            function to12Hour(time24) { // 'HH:mm'
+                let [hours, minutes] = time24.split(':');
+                hours = parseInt(hours, 10);
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                let hour12 = hours % 12;
+                if (hour12 === 0) {
+                    hour12 = 12;
+                }
+                return { hour: hour12, minute: minutes, ampm: ampm };
+            }
+
+            function to24Hour(hour, minute, ampm) {
+                hour = parseInt(hour, 10);
+                minute = String(minute).padStart(2, '0');
+                if (ampm.toUpperCase() === 'PM' && hour < 12) {
+                    hour += 12;
+                }
+                if (ampm.toUpperCase() === 'AM' && hour === 12) {
+                    hour = 0;
+                }
+                return `${String(hour).padStart(2, '0')}:${minute}`;
+            }
+            
+            function showMessage(message) {
+                messageText.textContent = message;
+                messageBox.classList.remove('hidden', 'opacity-0', 'translate-y-2');
+                setTimeout(() => {
+                    messageBox.classList.add('opacity-0', 'translate-y-2');
+                     setTimeout(() => messageBox.classList.add('hidden'), 300);
+                }, 2000);
+            }
+
+            // --- AUTHENTICATION ---
+            function checkAuth() {
+                isAdmin = sessionStorage.getItem('isAdmin') === 'true';
+                renderAuthControls();
+            }
+
+            function login() {
+                 const formHtml = `
+                    <div><label class="block text-left text-sm font-medium text-gray-700">Username</label><input class="mt-1 w-full px-3 py-2 border rounded" type="text" name="username" required></div>
+                    <div><label class="block text-left text-sm font-medium text-gray-700">Password</label><input class="mt-1 w-full px-3 py-2 border rounded" type="password" name="password" required></div>`;
+                showModal('Admin Login', formHtml, (data) => {
+                    if (data.username === "dhayaceoda" && data.password === "90474470770") {
+                        sessionStorage.setItem('isAdmin', 'true');
+                        isAdmin = true;
+                        showMessage("Admin mode enabled.");
+                    } else {
+                        showMessage("Incorrect username or password.");
+                        isAdmin = false;
+                    }
+                    renderAuthControls();
+                    updateAndRenderSchedule();
+                });
+            }
+
+            function logout() {
+                sessionStorage.removeItem('isAdmin');
+                isAdmin = false;
+                showMessage("Admin mode disabled.");
+                renderAuthControls();
+                updateAndRenderSchedule();
+            }
+
+            function renderAuthControls() {
+                if (isAdmin) {
+                    authContainer.innerHTML = `<button id="logout-btn" class="px-3 py-1 text-sm font-semibold text-white bg-red-600 rounded-md">Logout</button>`;
+                    document.getElementById('logout-btn').addEventListener('click', logout);
+                } else {
+                    authContainer.innerHTML = `<button id="login-btn" class="px-3 py-1 text-sm font-semibold text-white bg-gray-700 rounded-md">Admin</button>`;
+                    document.getElementById('login-btn').addEventListener('click', login);
+                }
+                addBusContainer.classList.toggle('hidden', !isAdmin);
+            }
+
+            // --- MODAL & EDITING LOGIC ---
+            function setupCustomSelectListener(selectId, containerId) {
+                const selectEl = editForm.querySelector(selectId);
+                const containerEl = editForm.querySelector(containerId);
+                if (selectEl) {
+                    selectEl.onchange = () => {
+                        if (selectEl.value === 'custom') {
+                            containerEl.classList.remove('hidden');
+                            containerEl.querySelector('input').required = true;
+                        } else {
+                            containerEl.classList.add('hidden');
+                            containerEl.querySelector('input').required = false;
+                        }
+                    };
+                }
+            }
+
+            function showModal(title, formHtml, onSave) {
+                modalTitle.textContent = title;
+                editForm.innerHTML = formHtml;
+                editModal.classList.remove('hidden');
+                
+                setupCustomSelectListener('#bus-name-select', '#custom-bus-name-container');
+                setupCustomSelectListener('#origin-select', '#custom-origin-container');
+                setupCustomSelectListener('#destination-select', '#custom-destination-container');
+                setupCustomSelectListener('#stop-name-select', '#custom-stop-name-container');
+
+                modalSaveBtn.onclick = () => {
+                    if (editForm.checkValidity()) {
+                        const formData = new FormData(editForm);
+                        let data = Object.fromEntries(formData.entries());
+                        if(data.busNumber === 'custom') data.busNumber = data.custom_busNumber;
+                        if(data.origin === 'custom') data.origin = data.custom_origin;
+                        if(data.destination === 'custom') data.destination = data.custom_destination;
+                        if(data.name === 'custom') data.name = data.custom_name;
+                        delete data.custom_busNumber;
+                        delete data.custom_origin;
+                        delete data.custom_destination;
+                        delete data.custom_name;
+                        onSave(data);
+                        hideModal();
+                    } else {
+                        editForm.reportValidity();
+                    }
+                };
+            }
+            
+            function hideModal() {
+                editModal.classList.add('hidden');
+                editForm.innerHTML = '';
+                modalSaveBtn.onclick = null;
+            }
+
+            function handleEditBus(busId) {
+                const bus = busData.find(b => b.id === busId);
+                
+                const busNameOptions = predefinedBusNames.map(s => `<option value="${s}" ${s === bus.busNumber ? 'selected' : ''}>${s}</option>`).join('');
+                const originOptions = predefinedOriginStops.map(s => `<option value="${s}" ${s === bus.origin ? 'selected' : ''}>${s}</option>`).join('');
+                const destinationOptions = predefinedDestinationStops.map(s => `<option value="${s}" ${s === bus.destination ? 'selected' : ''}>${s}</option>`).join('');
+                
+                const formHtml = `
+                    <input type="hidden" name="id" value="${bus.id}">
+                    <div><label class="block text-left text-sm font-medium text-gray-700">Bus Name:</label><select id="bus-name-select" name="busNumber" class="mt-1 w-full px-3 py-2 border rounded">${busNameOptions}<option value="custom">Other...</option></select><div id="custom-bus-name-container" class="hidden mt-2"><input type="text" name="custom_busNumber" class="w-full px-3 py-2 border rounded" placeholder="Enter Custom Bus Name"></div></div>
+                    <div><label class="block text-left text-sm font-medium text-gray-700">From:</label><select id="origin-select" name="origin" class="mt-1 w-full px-3 py-2 border rounded">${originOptions}<option value="custom">Other...</option></select><div id="custom-origin-container" class="hidden mt-2"><input type="text" name="custom_origin" class="w-full px-3 py-2 border rounded" placeholder="Enter Custom Origin"></div></div>
+                    <div><label class="block text-left text-sm font-medium text-gray-700">To:</label><select id="destination-select" name="destination" class="mt-1 w-full px-3 py-2 border rounded">${destinationOptions}<option value="custom">Other...</option></select><div id="custom-destination-container" class="hidden mt-2"><input type="text" name="custom_destination" class="w-full px-3 py-2 border rounded" placeholder="Enter Custom Destination"></div></div>
+                `;
+                showModal('Edit Bus Route', formHtml, (data) => {
+                    const busIndex = busData.findIndex(b => b.id === data.id);
+                    busData[busIndex] = { ...busData[busIndex], ...data };
+                    saveData();
+                    updateAndRenderSchedule();
+                });
+            }
+            
+            function handleAddBus() {
+                 const busNameOptions = predefinedBusNames.map(s => `<option value="${s}">${s}</option>`).join('');
+                 const originOptions = predefinedOriginStops.map(s => `<option value="${s}">${s}</option>`).join('');
+                 const destinationOptions = predefinedDestinationStops.map(s => `<option value="${s}">${s}</option>`).join('');
+                 const formHtml = `
+                    <div><label class="block text-left text-sm font-medium text-gray-700">Bus Name:</label><select id="bus-name-select" name="busNumber" class="mt-1 w-full px-3 py-2 border rounded" required><option value="" disabled selected>Select Bus Name</option>${busNameOptions}<option value="custom">Other...</option></select><div id="custom-bus-name-container" class="hidden mt-2"><input type="text" name="custom_busNumber" class="w-full px-3 py-2 border rounded" placeholder="Enter Custom Bus Name"></div></div>
+                    <div><label class="block text-left text-sm font-medium text-gray-700">From:</label><select id="origin-select" name="origin" class="mt-1 w-full px-3 py-2 border rounded" required><option value="" disabled selected>Select Origin</option>${originOptions}<option value="custom">Other...</option></select><div id="custom-origin-container" class="hidden mt-2"><input type="text" name="custom_origin" class="w-full px-3 py-2 border rounded" placeholder="Enter Custom Origin"></div></div>
+                    <div><label class="block text-left text-sm font-medium text-gray-700">To:</label><select id="destination-select" name="destination" class="mt-1 w-full px-3 py-2 border rounded" required><option value="" disabled selected>Select Destination</option>${destinationOptions}<option value="custom">Other...</option></select><div id="custom-destination-container" class="hidden mt-2"><input type="text" name="custom_destination" class="w-full px-3 py-2 border rounded" placeholder="Enter Custom Destination"></div></div>
+                    <div><label class="block text-left text-sm font-medium text-gray-700">Departure Time from Origin:</label><div class="flex items-center space-x-2 mt-1"><input type="number" name="hour" class="w-1/3 px-3 py-2 border rounded" placeholder="Hr" min="1" max="12" required><span class="font-bold">:</span><input type="number" name="minute" class="w-1/3 px-3 py-2 border rounded" placeholder="Min" min="0" max="59" required><select name="ampm" class="w-1/3 px-3 py-2 border rounded"><option>AM</option><option>PM</option></select></div></div>
+                `;
+                showModal('Add New Bus', formHtml, (data) => {
+                    const scheduledTime = to24Hour(data.hour, data.minute, data.ampm);
+                    const firstStop = { name: data.origin, scheduledTime: scheduledTime };
+                    const newBus = { 
+                        busNumber: data.busNumber, origin: data.origin, destination: data.destination,
+                        id: crypto.randomUUID(), stops: [firstStop]
+                    };
+                    busData.push(newBus);
+                    sortBusData();
+                    saveData();
+                    updateAndRenderSchedule();
+                });
+            }
+
+            function handleDeleteBus(busId) {
+                busData = busData.filter(b => b.id !== busId);
+                saveData();
+                updateAndRenderSchedule();
+            }
+            
+            function handleEditStop(busId, stopIndex) {
+                 const bus = busData.find(b => b.id === busId);
+                 const stop = bus.stops[stopIndex];
+                 const stopOptions = predefinedStops.map(s => `<option value="${s}" ${s === stop.name ? 'selected' : ''}>${s}</option>`).join('');
+                 const time12 = to12Hour(stop.scheduledTime);
+                 const formHtml = `
+                    <div><label class="block text-left text-sm font-medium text-gray-700">Stop Name:</label><select id="stop-name-select" name="name" class="mt-1 w-full px-3 py-2 border rounded" required>${stopOptions}<option value="custom">Other...</option></select><div id="custom-stop-name-container" class="hidden mt-2"><input type="text" name="custom_name" class="w-full px-3 py-2 border rounded" placeholder="Enter Custom Stop Name"></div></div>
+                    <div><label class="block text-left text-sm font-medium text-gray-700">Scheduled Time:</label><div class="flex items-center space-x-2 mt-1"><input type="number" name="hour" class="w-1/3 px-3 py-2 border rounded" value="${time12.hour}" min="1" max="12" required><span class="font-bold">:</span><input type="number" name="minute" class="w-1/3 px-3 py-2 border rounded" value="${time12.minute}" min="0" max="59" required><select name="ampm" class="w-1/3 px-3 py-2 border rounded"><option ${time12.ampm === 'AM' ? 'selected' : ''}>AM</option><option ${time12.ampm === 'PM' ? 'selected' : ''}>PM</option></select></div></div>`;
+                 showModal('Edit Stop', formHtml, (data) => {
+                     data.scheduledTime = to24Hour(data.hour, data.minute, data.ampm);
+                     bus.stops[stopIndex] = { name: data.name, scheduledTime: data.scheduledTime };
+                     bus.stops.sort((a,b) => parseTime(a.scheduledTime) - parseTime(b.scheduledTime));
+                     sortBusData();
+                     saveData();
+                     updateAndRenderSchedule();
+                 });
+            }
+
+             function handleAddStop(busId) {
+                 const bus = busData.find(b => b.id === busId);
+                 const stopOptions = predefinedStops.map(s => `<option value="${s}">${s}</option>`).join('');
+                 const formHtml = `
+                     <div><label class="block text-left text-sm font-medium text-gray-700">Stop Name:</label><select id="stop-name-select" name="name" class="mt-1 w-full px-3 py-2 border rounded" required><option value="" disabled selected>Select a stop</option>${stopOptions}<option value="custom">Other...</option></select><div id="custom-stop-name-container" class="hidden mt-2"><input type="text" name="custom_name" class="w-full px-3 py-2 border rounded" placeholder="Enter Custom Stop Name"></div></div>
+                    <div><label class="block text-left text-sm font-medium text-gray-700">Scheduled Time:</label><div class="flex items-center space-x-2 mt-1"><input type="number" name="hour" class="w-1/3 px-3 py-2 border rounded" placeholder="Hr" min="1" max="12" required><span class="font-bold">:</span><input type="number" name="minute" class="w-1/3 px-3 py-2 border rounded" placeholder="Min" min="0" max="59" required><select name="ampm" class="w-1/3 px-3 py-2 border rounded"><option>AM</option><option>PM</option></select></div></div>`;
+                 showModal('Add Stop', formHtml, (data) => {
+                     data.scheduledTime = to24Hour(data.hour, data.minute, data.ampm);
+                     bus.stops.push({ name: data.name, scheduledTime: data.scheduledTime });
+                     bus.stops.sort((a, b) => parseTime(a.scheduledTime) - parseTime(b.scheduledTime));
+                     sortBusData();
+                     saveData();
+                     updateAndRenderSchedule();
+                 });
+            }
+            
+             function handleDeleteStop(busId, stopIndex) {
+                const bus = busData.find(b => b.id === busId);
+                bus.stops.splice(stopIndex, 1);
+                sortBusData();
+                saveData();
+                updateAndRenderSchedule();
+            }
+
+
+            // --- EVENT LISTENERS ---
+            modalCancelBtn.onclick = hideModal;
+            addBusBtn.onclick = handleAddBus;
+            
+            scheduleList.addEventListener('click', (e) => {
+                const header = e.target.closest('.bus-header');
+                const busId = e.target.dataset.busId;
+                const stopIndex = e.target.dataset.stopIndex;
+
+                if (e.target.matches('.edit-bus-btn')) handleEditBus(busId);
+                if (e.target.matches('.delete-bus-btn')) handleDeleteBus(busId);
+                if (e.target.matches('.edit-stop-btn')) handleEditStop(busId, parseInt(stopIndex, 10));
+                if (e.target.matches('.delete-stop-btn')) handleDeleteStop(busId, parseInt(stopIndex, 10));
+                if (e.target.matches('.add-stop-btn')) handleAddStop(busId);
+                
+                if (header) {
+                    const details = document.getElementById(`details-${header.dataset.busId}`);
+                    if (details && !e.target.closest('button')) {
+                        details.classList.toggle('hidden');
+                         if (openDropdowns.has(header.dataset.busId)) openDropdowns.delete(header.dataset.busId);
+                        else openDropdowns.add(header.dataset.busId);
+                    }
+                }
+            });
+
+
+            // --- RENDER FUNCTIONS ---
+            function renderSchedule(data) {
+                scheduleList.innerHTML = '';
+                
+                if (data.length === 0) {
+                    scheduleList.innerHTML = `<p class="p-8 text-center text-gray-500">No upcoming buses found.</p>`;
+                    return;
+                }
+                
+                data.forEach(bus => {
+                    let arrivalText;
+                    let arrivalColor;
+
+                    if (bus.etaAtGoolikkadavu === null) {
+                        arrivalText = 'N/A';
+                        arrivalColor = 'text-gray-500 font-semibold';
+                    } else if (bus.etaAtGoolikkadavu < 0) {
+                        arrivalText = 'Departed';
+                        arrivalColor = 'text-gray-500 font-semibold';
+                    } else {
+                        arrivalText = formatEta(bus.etaAtGoolikkadavu);
+                        arrivalColor = bus.etaAtGoolikkadavu <= 1 ? 'text-red-600 font-semibold' : 'text-gray-900 font-semibold';
+                    }
+                    
+                    const isDropdownOpen = openDropdowns.has(bus.id);
+                    const itemHeight = 72;
+                    const liveIconTopPosition = bus.liveIconPositionIndex * itemHeight;
+
+                    let stopsHtml = '';
+                    bus.stops.forEach((stop, index) => {
+                        const stopDepartureTime = parseTime(stop.scheduledTime);
+                        const stopEta = Math.round((stopDepartureTime - new Date()) / 60000);
+                        let stopArrivalText = `Scheduled ${formatEta(stopEta, 'in ')}`;
+                        if(stopEta <=1 && stopEta >= 0) stopArrivalText = `Scheduled Now`;
+                        else if (stopEta < 0) stopArrivalText = `Departed`;
+                        
+                        const isPassed = stopEta < 0;
+                        const passedClass = isPassed ? 'passed' : '';
+                        
+                        const editButtons = isAdmin ? `
+                            <div class="flex items-center space-x-2">
+                                <button class="edit-stop-btn edit-btn" data-bus-id="${bus.id}" data-stop-index="${index}">Edit</button>
+                                <button class="delete-stop-btn delete-btn" data-bus-id="${bus.id}" data-stop-index="${index}">Del</button>
+                            </div>
+                        ` : `
+                             <p class="text-sm font-medium text-gray-600">${formatTime(stopDepartureTime)}</p>
+                        `;
+
+                        stopsHtml += `
+                            <div class="timeline-item ${passedClass}">
+                                <div class="timeline-connector"></div>
+                                <div class="flex justify-between items-start">
+                                    <div><p class="stop-name">${stop.name}</p><p class="text-sm text-gray-500">${stopArrivalText}</p></div>
+                                    ${editButtons}
+                                </div>
+                            </div>`;
+                    });
+                    
+                    if (isAdmin) {
+                        stopsHtml += `<div class="pl-10 pt-2"><button class="add-stop-btn edit-btn" data-bus-id="${bus.id}">+ Add Stop</button></div>`;
+                    }
+
+                    const editBusButtons = isAdmin ? `
+                        <div class="absolute top-2 right-2 flex space-x-2">
+                            <button class="edit-bus-btn edit-btn" data-bus-id="${bus.id}">Edit</button>
+                            <button class="delete-bus-btn delete-btn" data-bus-id="${bus.id}">Del</button>
+                        </div>
+                    `: '';
+
+                    const subtext = bus.etaAtGoolikkadavu === null 
+                        ? `<span class="font-bold text-gray-700">${bus.busNumber}</span> <span class="text-yellow-600"> - Add 'Goolikkadavu Jn' stop to track.</span>`
+                        : `<span class="font-bold text-gray-700">${bus.busNumber}</span> <span>Schedule on time</span>`;
+
+
+                    const listItem = `
+                        <div class="bus-item relative">
+                             ${editBusButtons}
+                            <div class="bus-header p-4 flex items-center cursor-pointer" data-bus-id="${bus.id}">
+                                <span class="text-3xl mr-4">🚍</span>
+                                <div class="flex-grow">
+                                     <div class="flex items-baseline mb-1"><p class="font-bold text-gray-800">${bus.busNumber}</p><p class="text-sm font-medium text-gray-600 ml-2"><span class="inline-block bg-gray-100 text-gray-800 px-2 py-0.5 rounded">${bus.origin} - ${bus.destination}</span></p></div>
+                                    <div class="flex items-center space-x-1 text-xs text-gray-500">${subtext}</div>
+                                </div>
+                                <div class="text-right"><p class="${arrivalColor} text-lg">${arrivalText}</p></div>
+                            </div>
+                            <div id="details-${bus.id}" class="bus-details px-4 pb-2 ${isDropdownOpen ? '' : 'hidden'}">
+                                <div class="timeline-wrapper">
+                                    ${stopsHtml}
+                                    <span class="live-dot-icon" style="top: ${liveIconTopPosition}px;"></span>
+                                </div>
+                            </div>
+                        </div>`;
+                    scheduleList.innerHTML += listItem;
+                });
+            }
+
+            function updateAndRenderSchedule() {
+                const currentTime = new Date();
+                
+                let liveBusData = busData.map(bus => {
+                    if (bus.stops.length === 0) {
+                        return isAdmin ? { ...bus, etaAtGoolikkadavu: null, liveIconPositionIndex: 0 } : null;
+                    }
+                    
+                    const goolikkadavuStop = bus.stops.find(stop => stop.name === 'Goolikkadavu Jn');
+                    
+                    let etaAtGoolikkadavu = null;
+                    if (goolikkadavuStop) {
+                        const goolikkadavuArrivalTime = parseTime(goolikkadavuStop.scheduledTime);
+                        etaAtGoolikkadavu = Math.round((goolikkadavuArrivalTime - currentTime) / 60000);
+                    } else if (!isAdmin) {
+                        return null; // Hide from public if no Goolikkadavu stop
+                    }
+                    
+                    let liveIconPositionIndex = 0;
+                    const nextStopIndex = bus.stops.findIndex(stop => parseTime(stop.scheduledTime) > currentTime);
+
+                    if (nextStopIndex === -1) {
+                        liveIconPositionIndex = bus.stops.length;
+                    } else if (nextStopIndex > 0) {
+                        const lastStop = bus.stops[nextStopIndex - 1];
+                        const nextStop = bus.stops[nextStopIndex];
+                        const lastStopTime = parseTime(lastStop.scheduledTime).getTime();
+                        const nextStopTime = parseTime(nextStop.scheduledTime).getTime();
+                        const segmentDuration = nextStopTime - lastStopTime;
+                        if (segmentDuration > 0) {
+                            const progressInSegment = (currentTime.getTime() - lastStopTime) / segmentDuration;
+                            liveIconPositionIndex = (nextStopIndex - 1) + Math.min(1, Math.max(0, progressInSegment));
+                        } else {
+                            liveIconPositionIndex = nextStopIndex -1;
+                        }
+                    } else {
+                         liveIconPositionIndex = 0;
+                    }
+                    
+                    return { ...bus, etaAtGoolikkadavu, liveIconPositionIndex };
+                }).filter(Boolean);
+                
+                if (!isAdmin) {
+                    liveBusData = liveBusData.filter(bus => bus.etaAtGoolikkadavu !== null && bus.etaAtGoolikkadavu > -15);
+                    liveBusData.sort((a,b) => a.etaAtGoolikkadavu - b.etaAtGoolikkadavu);
+                }
+                
+                renderSchedule(liveBusData);
+            }
+            
+            // --- INITIALIZATION ---
+            function init() {
+                checkAuth();
+                loadData();
+                updateAndRenderSchedule();
+                setInterval(updateAndRenderSchedule, 2000);
+            }
+
+            init();
+        });
+    </script>
+
+</body>
+</html>

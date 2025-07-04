@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Booking Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #f0f2f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .booking-section {
+      padding: 60px 20px;
+      background: linear-gradient(135deg, #fdfbfb, #ebedee);
+    }
+
+    .booking-container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      border-radius: 12px;
+      padding: 40px 30px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .booking-title {
+      font-size: 36px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .booking-subtitle {
+      font-size: 18px;
+      color: #555;
+      margin-bottom: 30px;
+    }
+
+    .form-floating input,
+    .form-select {
+      border-radius: 10px;
+      font-weight: 500;
+    }
+
+    .btn-submit {
+      background-color: #4d50e3;
+      border: none;
+      padding: 12px 30px;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 8px;
+      color: white;
+      transition: background-color 0.3s;
+    }
+
+    .btn-submit:hover {
+      background-color: #62b8dd;
+    }
+
+    @media (max-width: 576px) {
+      .booking-title {
+        font-size: 28px;
+      }
+
+      .booking-container {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <section class="booking-section">
+    <div class="booking-container">
+
+      <div class="text-center mb-4">
+        <h2 class="booking-title">Book Your Ride</h2>
+        <h3 class="booking-subtitle">Fill in the form below to book your taxi easily.</h3>
+      </div>
+
+      <form action="/send-enquiry" method="POST" class="row g-3">
+
+        <!-- Name -->
+        <div class="col-md-6">
+          <div class="form-floating">
+            <input name="name" type="text" class="form-control" id="userName" placeholder="Enter your name" required />
+            <label for="userName">Enter Your Name</label>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="col-md-6">
+          <div class="form-floating">
+            <input name="email" type="email" class="form-control" id="userEmail" placeholder="name@example.com" required />
+            <label for="userEmail">Email Address</label>
+          </div>
+        </div>
+
+        <!-- Mobile -->
+        <div class="col-md-6">
+          <div class="form-floating">
+            <input name="mobile" type="tel" class="form-control" id="userMobile" placeholder="0987654321" pattern="[0-9]{10}" required />
+            <label for="userMobile">Mobile Number</label>
+          </div>
+        </div>
+
+        <!-- Service Type -->
+        <div class="col-md-6">
+          <div class="form-floating">
+            <select name="service" id="service" class="form-select" required onchange="toggleDropDateField()">
+              <option value="" selected disabled>Service Type</option>
+              <option value="0">One Way Trip</option>
+              <option value="1">Round Trip</option>
+            </select>
+            <label for="service">Service Type</label>
+          </div>
+        </div>
+
+        <!-- Pickup Location -->
+        <div class="col-md-6">
+          <div class="form-floating">
+            <input name="from" type="text" class="form-control" id="pick" placeholder="Pickup Location" required />
+            <label for="pick">Pickup Location</label>
+          </div>
+        </div>
+
+        <!-- Drop Location -->
+        <div class="col-md-6">
+          <div class="form-floating">
+            <input name="to" type="text" class="form-control" id="drop" placeholder="Drop Location" required />
+            <label for="drop">Drop Location</label>
+          </div>
+        </div>
+
+        <!-- Pickup Date & Time -->
+        <div class="col-md-6">
+          <div class="form-floating">
+            <input name="pickupDateTime" type="datetime-local" class="form-control" id="pickupDateInput" required />
+            <label for="pickupDateInput">Pickup Date &amp; Time</label>
+          </div>
+        </div>
+
+        <!-- Drop Date & Time (Only for Round Trip) -->
+        <div class="col-md-6" id="dropDateContainer" style="display: none;">
+          <div class="form-floating">
+            <input name="dropDateTime" type="datetime-local" class="form-control" id="dropDateInput" />
+            <label for="dropDateInput">Drop Date &amp; Time</label>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="col-12 text-center">
+          <button class="btn btn-submit" type="submit">Submit</button>
+        </div>
+
+      </form>
+    </div>
+  </section>
+
+  <!-- Script for Drop Date Toggle -->
+  <script>
+    function toggleDropDateField() {
+      const service = document.getElementById("service").value;
+      const dropDateContainer = document.getElementById("dropDateContainer");
+      const dropDateInput = document.getElementById("dropDateInput");
+
+      if (service === '1') {
+        dropDateContainer.style.display = 'block';
+        dropDateInput.required = true;
+      } else {
+        dropDateContainer.style.display = 'none';
+        dropDateInput.required = false;
+      }
+    }
+  </script>
+
+</body>
+
+</html>
