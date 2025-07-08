@@ -649,14 +649,17 @@ body {
 }
 
 .banner-container {
+  
   position: relative;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  height: 148px;
+
 }
 
 .banner-image {
-  width: 100%;
+  /* width: 100%; */
   height: auto;
   display: block;
   object-fit: cover;
@@ -712,3 +715,123 @@ body {
     padding: 8px 18px;
   }
 }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f1f5f9;
+}
+
+/* Timeline Section */
+.trip-roadmap-modern {
+  padding: 30px 15px;
+  background-color: #f9f9f9;
+}
+
+.trip-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+/* Timeline Container */
+.timeline {
+  position: relative;
+  margin-left: 20px;
+  border-left: 3px solid #ccc;
+}
+
+/* Each Timeline Step */
+.timeline-item {
+  position: relative;
+  margin-bottom: 30px;
+  padding-left: 30px;
+}
+
+/* Dot on the Timeline */
+.timeline-dot {
+  position: absolute;
+  top: 10px;
+  left: -11px;
+  width: 20px;
+  height: 20px;
+  background-color: #6c5ce7;
+  border: 3px solid white;
+  border-radius: 50%;
+  z-index: 1;
+  box-shadow: 0 0 0 4px #6c5ce7;
+}
+
+/* Content Box */
+.timeline-content {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+
+.timeline-content:hover {
+  transform: scale(1.02);
+}
+
+/* Image Style */
+.timeline-image img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 15px;
+  border: 2px solid #eee;
+}
+
+/* Text Style */
+.timeline-text h4 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+.timeline-text p {
+  font-size: 14px;
+  color: #888;
+  margin: 5px 0 0 0;
+}
+
+  .bottom-banner {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #00d46a;
+    overflow: hidden;
+    z-index: 1000;
+  }
+
+  .banner-wrapper {
+    display: flex;
+    width: max-content;
+    animation: scroll-left 20s linear infinite;
+  }
+
+  .banner-offer {
+    white-space: nowrap;
+    padding: 0 2rem;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+  }
+
+  @keyframes scroll-left {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
